@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word Rearranging Game - MUBC-3 Class 7(A)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2d3748;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      text-align: center;
+      color: #444;
+    }
+    .footer ul {
+      text-align: left;
+      margin-top: 10px;
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>  <h1>Word Rearranging Game</h1>  <div class="card">
+    <div id="scrambledWord" style="font-size: 20px; margin-bottom: 10px;">Scrambled Word: <strong>loading...</strong></div>
+    <input type="text" id="userInput" placeholder="Type your answer here" />
+    <button onclick="checkAnswer()">Check</button>
+    <div id="message" class="message"></div>
+    <div id="score">Score: 0</div>
+  </div>  <script>
+    const words = [
+      { original: "enough", scrambled: "hogenu" },
+      { original: "detergent", scrambled: "eretnegtd" },
+      { original: "outcomes", scrambled: "uostcemo" },
+      { original: "pots", scrambled: "psto" },
+      { original: "near", scrambled: "rane" },
+      { original: "customer", scrambled: "mouesrtc" },
+      { original: "television", scrambled: "evetosilin" },
+      { original: "litre", scrambled: "tlrei" },
+      { original: "intonation", scrambled: "otanntniio" },
+      { original: "including", scrambled: "gidclinnu" },
+      { original: "look", scrambled: "okol" },
+      { original: "doing", scrambled: "ingdo" },
+      { original: "programmes", scrambled: "roargsmemp" },
+      { original: "teacher", scrambled: "heecart" },
+      { original: "conversations", scrambled: "oocetsvniasrn" },
+      { original: "commands", scrambled: "dmamnsco" },
+      { original: "book", scrambled: "obok" },
+      { original: "lesson", scrambled: "lensos" },
+      { original: "oxford", scrambled: "rodxof" },
+      { original: "along", scrambled: "agnlo" },
+      { original: "monkey", scrambled: "eoknmy" },
+      { original: "yesterday", scrambled: "adretyeys" },
+      { original: "visit", scrambled: "stvii" },
+      { original: "situation", scrambled: "tiiontaus" },
+      { original: "start", scrambled: "atsrt" },
+      { original: "adults", scrambled: "stdual" },
+      { original: "address", scrambled: "dsasedr" },
+      { original: "make", scrambled: "emka" },
+      { original: "same", scrambled: "maes" },
+      { original: "stream", scrambled: "tsemar" },
+      { original: "word", scrambled: "drwo" },
+      { original: "extremely", scrambled: "eeletymxr" },
+      { original: "english", scrambled: "einglhs" },
+      { original: "actual", scrambled: "utalca" },
+      { original: "bachelor", scrambled: "boalehcr" },
+      { original: "compositions", scrambled: "ootsminioscp" },
+      { original: "sister", scrambled: "tisres" },
+      { original: "going", scrambled: "gnoig" },
+      { original: "principal", scrambled: "napiirclp" },
+      { original: "verbs", scrambled: "rbsve" },
+      { original: "year", scrambled: "ayer" },
+      { original: "thought", scrambled: "hhtutgo" },
+      { original: "lessons", scrambled: "lsnesso" },
+      { original: "intelligently", scrambled: "eeyitntglllin" },
+      { original: "until", scrambled: "ltuin" },
+      { original: "full", scrambled: "fllu" },
+      { original: "mind", scrambled: "dmni" },
+      { original: "places", scrambled: "clapse" },
+      { original: "weeks", scrambled: "eksew" },
+      { original: "pictures", scrambled: "tprcueis" },
+      { original: "wrong", scrambled: "gnwor" },
+      { original: "unwell", scrambled: "leunlw" },
+      { original: "walking", scrambled: "kglawni" },
+      { original: "deeds", scrambled: "dsede" },
+      { original: "learning", scrambled: "inlagern" },
+      { original: "take", scrambled: "etak" },
+      { original: "admitted", scrambled: "itmaddte" },
+      { original: "asks", scrambled: "assk" },
+      { original: "recite", scrambled: "irtece" },
+      { original: "passage", scrambled: "aegpsas" },
+      { original: "prices", scrambled: "ecsrip" },
+      { original: "correct", scrambled: "ectrrco" },
+      { original: "phrases", scrambled: "pesahrs" },
+      { original: "again", scrambled: "iagna" },
+      { original: "anger", scrambled: "eganr" },
+      { original: "never", scrambled: "enerv" },
+      { original: "together", scrambled: "tetreogh" },
+      { original: "truly", scrambled: "ltury" },
+      { original: "washes", scrambled: "hwases" },
+      { original: "around", scrambled: "rnudoa" },
+      { original: "frequently", scrambled: "tfeunreylq" },
+      { original: "generational", scrambled: "lartnaenoegi" },
+      { original: "trouble", scrambled: "lretubo" },
+      { original: "against", scrambled: "sagnait" },
+      { original: "body", scrambled: "odby" },
+      { original: "frustration", scrambled: "onfsritratu" },
+      { original: "sell", scrambled: "ells" },
+      { original: "numbers", scrambled: "rnbseum" },
+      { original: "needs", scrambled: "edens" },
+      { original: "refers", scrambled: "eerrfs" },
+      { original: "meals", scrambled: "lesma" },
+      { original: "housework", scrambled: "reouwkhos" },
+      { original: "support", scrambled: "ptropsu" },
+      { original: "eldest", scrambled: "sdteel" },
+      { original: "poor", scrambled: "orop" },
+      { original: "happiness", scrambled: "hppneaiss" },
+      { original: "vivid", scrambled: "idivv" },
+      { original: "village", scrambled: "vgaelil" },
+      { original: "liberation", scrambled: "tlnbrioeai" },
+      { original: "describe", scrambled: "sedecbri" },
+      { original: "does", scrambled: "soed" },
+      { original: "read", scrambled: "adre" },
+      { original: "town", scrambled: "tonw" },
+      { original: "always", scrambled: "ywalas" },
+      { original: "famous", scrambled: "mausof" },
+      { original: "nilphamari", scrambled: "iimahpanrl" },
+      { original: "excited", scrambled: "decxiet" },
+      { original: "committee", scrambled: "ctitemoem" },
+      { original: "waited", scrambled: "witdea" },
+      { original: "floated", scrambled: "fadtleo" },
+      { original: "events", scrambled: "nesetv" },
+      { original: "anne", scrambled: "anen" },
+      { original: "which", scrambled: "hhiwc" },
+      { original: "indian", scrambled: "aiidnn" },
+      { original: "school", scrambled: "choosl" },
+      { original: "reading", scrambled: "rgdenai" },
+      { original: "communication", scrambled: "itunconmaimco" },
+      { original: "injured", scrambled: "erjnudi" },
+      { original: "times", scrambled: "siemt" },
+      { original: "translate", scrambled: "aetrlsatn" },
+      { original: "complete", scrambled: "cpeeomlt" },
+      { original: "died", scrambled: "dide" },
+      { original: "disabled", scrambled: "isldedba" },
+      { original: "living", scrambled: "vlingi" },
+      { original: "alabama", scrambled: "abalaam" },
+      { original: "opinion", scrambled: "pnnooii" },
+      { original: "there", scrambled: "hteer" },
+      { original: "type", scrambled: "etpy" },
+      { original: "went", scrambled: "tnew" },
+      { original: "important", scrambled: "iroptnatm" },
+      { original: "something", scrambled: "shnmogite" },
+      { original: "nightingale", scrambled: "hitlgannegi" },
+      { original: "enjoy", scrambled: "eojyn" },
+      { original: "able", scrambled: "aelb" },
+      { original: "contacted", scrambled: "deatncoct" }
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    function updateWord() {
+      document.getElementById("scrambledWord").innerHTML = "Scrambled Word: <strong>" + words[index].scrambled + "</strong>";
+      document.getElementById("userInput").value = "";
+      document.getElementById("message").textContent = "";
+    }
+
+    function checkAnswer() {
+      const input = document.getElementById("userInput").value.trim().toLowerCase();
+      const correct = words[index].original.toLowerCase();
+      const messageBox = document.getElementById("message");
+
+      if (!input) {
+        messageBox.textContent = "Please type a word before checking.";
+        messageBox.style.color = "orange";
+        return;
+      }
+
+      if (input === correct) {
+        score++;
+        messageBox.style.color = "green";
+        messageBox.textContent = "Correct!";
+      } else {
+        messageBox.style.color = "red";
+        messageBox.textContent = "Wrong! Correct answer was: " + correct;
+      }
+
+      index = (index + 1) % words.length;
+      document.getElementById("score").textContent = "Score: " + score;
+      setTimeout(updateWord, 1000);
+    }
+
+    updateWord();
+  </script>  <div class="footer">
+    <p>
+      This educational game was developed exclusively for students of <strong>MUBC-3 Class 7(A)</strong> 
+      as part of an initiative led by Hafiz Sir. It includes 125 rearranging word challenges 
+      to strengthen vocabulary and English proficiency.<br><br>
+      <strong>These words were taken directly from the Class 7 English 1st Paper textbook (pages 1–54).</strong><br><br>
+      The platform was created by <strong>Muntakim Zaman Dihan</strong>, Roll No. 65, 
+      a student of Monipur Uccha Bidalaya & College, Branch 3, Class 7 (Section A).
+    </p><ul>
+  <li><strong>100–125 correct:</strong> Excellent! You're a top performer and may receive a special gift.</li>
+  <li><strong>60–100 correct:</strong> Good effort — keep practicing to improve even further!</li>
+  <li><strong>1–50 correct:</strong> Don’t worry. Regular practice will help you get better every day.</li>
+</ul>
+
+<p style="margin-top: 30px; color: #777;">©Copyright 2025 All Rights Reserved</p>
+
+  </div></body>
+</html>
